@@ -1,3 +1,5 @@
+# Meeting Summarizer
+
 ## 🚀 Project Objective
 
 This project delivers a web application designed to automate the transcription and analysis of meeting audio. It utilizes powerful, free-to-use models to produce a full text transcript and an action-oriented summary, focusing on **key decisions** and **action items**.
