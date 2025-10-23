@@ -1,0 +1,5 @@
+openai-whisper
+google-genai
+pydub
+python-dotenv
+Flask

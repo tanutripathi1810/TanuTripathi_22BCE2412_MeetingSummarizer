@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Summarizer</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
+        h2 { color: #0056b3; margin-top: 20px; }
+        .upload-form { margin-bottom: 30px; border: 1px dashed #ccc; padding: 20px; text-align: center; border-radius: 4px; }
+        .result-section { margin-top: 30px; padding: 15px; background-color: #e9ecef; border-radius: 6px; }
+        .transcript-box { max-height: 200px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; background-color: #fff; margin-top: 10px; white-space: pre-wrap; }
+        .error { color: red; font-weight: bold; }
+        ul { list-style-type: disc; margin-left: 20px; }
+        .download-btn { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; margin-bottom: 20px; }
+        .download-btn:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meeting Audio Summarizer (ASR + LLM)</h1>
+
+        <div class="upload-form">
+            <form method="POST" action="{{ url_for('summarize_meeting') }}" enctype="multipart/form-data">
+                <label for="audio_file">Upload Meeting Audio (MP3, WAV, M4A, FLAC):</label><br><br>
+                <input type="file" name="audio_file" id="audio_file" accept=".mp3, .wav, .m4a, .flac" required>
+                <br><br>
+                <button type="submit">Summarize & Extract Action Items</button>
+            </form>
+            
+            {% if error %}
+                <p class="error">Error: {{ error }}</p>
+            {% endif %}
+        </div>
+        
+        {% if success %}
+            <div class="result-section">
+                
+                <h2>✅ Summarization Complete</h2>
+                
+                <form method="POST" action="{{ url_for('download_summary') }}">
+                    <input type="hidden" name="full_summary_text" value="{{ summary_data_json }}">
+                    <button type="submit" class="download-btn">
+                        📥 Download Summary (.txt)
+                    </button>
+                </form>
+                
+                <h3>Summary</h3>
+                <p>{{ summary }}</p>
+
+                <h3>Key Decisions</h3>
+                {% if decisions %}
+                    <ul>
+                    {% for decision in decisions %}
+                        <li>{{ decision }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No key decisions were explicitly found.</p>
+                {% endif %}
+
+                <h3>Action Items / Tasks</h3>
+                {% if actions %}
+                    <ul>
+                    {% for action in actions %}
+                        <li>{{ action }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No explicit action items were found.</p>
+                {% endif %}
+
+                <h3>Full Transcript</h3>
+                <div class="transcript-box">
+                    {{ transcript }}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</body>
+</html>

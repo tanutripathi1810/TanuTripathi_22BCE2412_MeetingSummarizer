@@ -1,0 +1,12 @@
+# Python environment
+venv/
+__pycache__/
+
+# Secrets
+.env
+
+# Uploaded files
+uploads/
+
+# Whisper model cache (can be large)
+.whisper
